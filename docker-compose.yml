@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  # docker run -e MYSQL_ROOT_PASSWORD=password mysql mysqld --default-authentication-plugin=mysql_native_password
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: catdatabase
+    networks:
+      - docker_workshop_network
+    volumes:
+      - docker_data_storage_mysql:/var/lib/mysql
+
+  # docker run -p 8080:8080 adminer
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - docker_workshop_network
+
+  python-project:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:80
+
+networks:
+  docker_workshop_network:
+
+volumes:
+  docker_data_storage_mysql:
